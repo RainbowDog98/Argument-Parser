@@ -1,5 +1,5 @@
-# Argument-Parser
-#### Very simple argument parser written in C++
+# CLI Argument-Parser
+#### Very simple CLI argument parser written in C++
 
 Parse arguments using C++
 No dependencies required, everything is written in pure C++
