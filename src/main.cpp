@@ -11,8 +11,8 @@ int main(int argc, char* argv[]){
 
     parser.add_single_argument(&delete_file, 'd', "delete", "Delete a file");
     parser.add_single_argument(&print_uwu, 'u', "uwu", "Prints UwU");
-    parser.add_value_argument(&value, 'v', "value", "Changes the default value (default: 69)");
-    parser.add_value_argument(&count, 'c', "count", "Changes the default count (default: 20)");
+    parser.add_int_value_argument(&value, 'v', "value", "Changes the default value (default: 69)");
+    parser.add_int_value_argument(&count, 'c', "count", "Changes the default count (default: 20)");
 
     int check = parser.parse_arguments(argc, argv);
 
