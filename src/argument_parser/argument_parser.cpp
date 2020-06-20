@@ -12,6 +12,10 @@ void ArgumentParser::add_int_value_argument(int *value, char argument, std::stri
     given_arguments_int_value.push_back( std::make_tuple(value, argument, full_argument, help) );
 }
 
+void ArgumentParser::add_string_value_argument(std::string *value, char argument, std::string full_argument, std::string help){
+    given_arguments_string_value.push_back( std::make_tuple(value, argument, full_argument, help) );
+}
+
 void ArgumentParser::print_information(){
     puts("Available arguments");
 
@@ -20,6 +24,9 @@ void ArgumentParser::print_information(){
     }
     for (auto arg : given_arguments_int_value){
         std::cout << '-' << std::get<1>(arg) << " VALUE [--" << std::get<2>(arg) << "=VALUE]| " << std::get<3>(arg) << std::endl;
+    }
+    for (auto arg : given_arguments_string_value){
+        std::cout << '-' << std::get<1>(arg) << " STRING [--" << std::get<2>(arg) << "=STRING]| " << std::get<3>(arg) << std::endl;
     }
 }
 
@@ -38,8 +45,6 @@ int ArgumentParser::parse_arguments(int argc, char *argv[]){
 
             if (argv[i][1] == '-'){
                 // Detected the full argument name
-                //puts("Detected the full argument");
-                //int str_len = strlen(argv[i]);
                 std::string str = argv[i];
                 if( str.length() > 2){
                     
@@ -60,8 +65,8 @@ int ArgumentParser::parse_arguments(int argc, char *argv[]){
                         std::string sub_str = str.substr(0, split_index);
                         std::string value = str.substr(split_index + 1, str.length() - 1);
 
-                         std::cout << "DEBUG: parsed argument: " << sub_str << std::endl;
-                         std::cout << "DEBUG: parsed value: " << value << std::endl;
+                         //std::cout << "DEBUG: parsed argument: " << sub_str << std::endl;
+                         //std::cout << "DEBUG: parsed value: " << value << std::endl;
 
                         for (auto arg : given_arguments_int_value){
                             if (sub_str == std::get<2>(arg)){
@@ -73,7 +78,18 @@ int ArgumentParser::parse_arguments(int argc, char *argv[]){
                                 *std::get<0>(arg) = std::stoi(value);
                                 has_matched = true;
                             }
+                        }
 
+                        for (auto arg : given_arguments_string_value){
+                            if (sub_str == std::get<2>(arg)){
+                                if(str.length() == sub_str.length()){
+                                   std::cout << "ERROR Invalid string for --" << sub_str << " argument!\n";
+                                    return -1;
+                                }
+                                printf("Argument parsed :^)\n");
+                                *std::get<0>(arg) = value;
+                                has_matched = true;
+                            }
                         }
                 }
         }
@@ -103,6 +119,20 @@ int ArgumentParser::parse_arguments(int argc, char *argv[]){
                         }
                         printf("Argument parsed :^)\n");
                         *std::get<0>(arg) = std::stoi(argv[i + 1]);
+                        has_matched = true;   
+                    }
+                }
+
+                // Do the string value type argument scan
+                for (auto arg : given_arguments_string_value){
+                    if (argv[i][j] == std::get<1>(arg)){
+ 
+                        if(i + 1 >= argc){
+                            std::cout << "ERROR: string for -" << argv[i][j] << " was not specified\n";
+                            return -1;
+                        }
+                        printf("Argument parsed :^)\n");
+                        *std::get<0>(arg) = argv[i + 1];
                         has_matched = true;   
                     }
                 }
